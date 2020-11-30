@@ -19,12 +19,29 @@ class Main {
 	static var playerMove:Vector2 = new Vector2();
 	static var lastZoom:Bool = true;
 	static var lastUnZoom:Bool = true;
+	static var isRotate:Bool = false;
+
+	inline public static var PI = 3.141592653589793;
+
+	inline static var d2r = PI / 180 ;
+	public static function degToRad(degrees:Float):Float {
+		return degrees * d2r;
+	}
+
+	inline static var r2d = 180 / PI;
+	public static function radToDeg(radians:Float):Float {
+		return radians * r2d;
+	}
+
 	static function update(): Void {
 		if(zoom && lastZoom != zoom && camera.zoom < 2.0){
 			camera.zoom += 0.1;
 		}
 		if(unZoom && lastUnZoom != unZoom  && camera.zoom > 0.2){
 			camera.zoom -= 0.1;
+		}
+		if(isRotate){
+			camera.rotation +=0.01;
 		}
 		if(playerMove.x != 0){
 			objects[0].position.x += playerMove.x;
@@ -44,7 +61,7 @@ class Main {
 		if(g2.font == null) g2.font = Assets.fonts.font_default;
 		g2.fontSize = 20;
 		g2.begin(true, Color.fromBytes(0, 95, 106));
-		var text = "Zoom level is: " + camera.zoom;
+		var text = "Zoom level is: " + camera.zoom + "rotation is: " + radToDeg(camera.rotation);
 		g2.drawString(text,System.windowWidth() -300,0);
 
 		g2.pushTransformation(camera.getTransformation(1.0));
@@ -68,6 +85,9 @@ class Main {
 		else if(keycode == KeyCode.F2 ){
 			unZoom = true;
 		}
+		else if(keycode == KeyCode.F3 ){
+			isRotate = true;
+		}
 		else if (keycode == KeyCode.Up){
 			playerMove.y = -1;
 		}
@@ -88,6 +108,9 @@ class Main {
 		}
 		else if(keycode == KeyCode.F2){
 			unZoom = false;
+		}
+		else if(keycode == KeyCode.F3 ){
+			isRotate = false;
 		}
 		else if (keycode == KeyCode.Up){
 			playerMove.y = 0;

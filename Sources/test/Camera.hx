@@ -7,7 +7,7 @@ class Camera extends Object {
 
     public var origin(get,null):Vector2 = new Vector2();
 	function get_origin(){
-		origin.x = width* 0.5;
+		origin.x = width * 0.5;
 		origin.y = height * 0.5; 
 		return origin;
 	}
@@ -21,15 +21,17 @@ class Camera extends Object {
 	public function getTransformation(parallax:Float) {
 		lastParallax = parallax;
 		var center = origin;
-		var translation = FastMatrix3.translation(-position.x * parallax,-position.y * parallax).multmat(FastMatrix3.translation(-center.x,-center.y));
-		translation = translation.multmat(FastMatrix3.rotation(rotation));
-		translation.setFrom(FastMatrix3.scale(zoom, zoom).multmat(translation));
-		return translation.multmat(FastMatrix3.translation(center.x,center.y));
+		var transformation = FastMatrix3.identity();
+		transformation.setFrom(FastMatrix3.scale(zoom,zoom).multmat(transformation));
+		transformation.setFrom(FastMatrix3.translation(center.x, center.y).multmat(FastMatrix3.rotation(rotation)).multmat(FastMatrix3.translation(-center.x, -center.y)).multmat(transformation));
+		transformation.setFrom(FastMatrix3.translation(center.x, center.y).multmat(transformation));
+		transformation.setFrom(FastMatrix3.translation(-position.x*parallax, -position.y*parallax).multmat(transformation));
+		return transformation;
     }
     public function lookAt(position:Vector2){
 		var center = origin;
-		this.position.x = position.x - center.x;
-		this.position.y = position.y - center.y;
+		this.position.x = position.x;
+		this.position.y = position.y;
     }
     public function worldToScreen( worldPosition:Vector2 ):Vector2
     {
