@@ -4,9 +4,9 @@ import kha.math.Vector2;
 
 class Sprite extends Object {
     var image:kha.Image;
-    public function new() {
-        super(100,100);
-        image = kha.Assets.images.bird;
+    public function new(?imageName:String = null,?layer:Int = 0,?parallax:Float = 1.0) {
+        super(100,100,layer,parallax);
+        image = imageName == null ? kha.Assets.images.bird : kha.Assets.images.get(imageName);
         width = image.width;
         height = image.height;
     }

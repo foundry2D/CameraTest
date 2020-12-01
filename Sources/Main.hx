@@ -20,6 +20,7 @@ class Main {
 	static var lastZoom:Bool = true;
 	static var lastUnZoom:Bool = true;
 	static var isRotate:Bool = false;
+	static var isLookAt:Bool = true; 
 
 	inline public static var PI = 3.141592653589793;
 
@@ -43,15 +44,19 @@ class Main {
 		if(isRotate){
 			camera.rotation +=0.01;
 		}
-		if(playerMove.x != 0){
-			objects[0].position.x += playerMove.x;
+		if(playerMove.x != 0 && isLookAt){
+			// camera.position.x += playerMove.x;
 		}
-		if(playerMove.y != 0){
-			objects[0].position.y += playerMove.y;
+		if(playerMove.y != 0 && isLookAt){
+			// camera.position.y += playerMove.y;
 		}
-		camera.lookAt(objects[0]);
+		if(isLookAt)
+			camera.lookAt(objects[1]);
+		else
+			camera.move(playerMove,true);
 		lastZoom = zoom;
 		lastUnZoom = unZoom;
+
 	}
 
 	static function render(frames: Array<Framebuffer>): Void {
@@ -64,9 +69,15 @@ class Main {
 		var text = "Zoom level is: " + camera.zoom + "rotation is: " + radToDeg(camera.rotation);
 		g2.drawString(text,System.windowWidth() -300,0);
 
-		g2.pushTransformation(camera.getTransformation(1.0));
-
+		var lastLayer = -1;
 		for(obj in objects){
+			if(lastLayer != obj.layer){
+				if(lastLayer > -1){
+					g2.popTransformation();
+				}
+				g2.pushTransformation(camera.getTransformation(obj.parallax));
+				lastLayer = obj.layer;
+			}
 			var pos = obj.position.mult(camera.zoom);
 			g2.pushTranslation(pos.x,pos.y);
 			obj.render(g2);
@@ -135,11 +146,11 @@ class Main {
 					if( i > 1)
 						objects.push(new Object(100,100));
 					switch(i){
-						case 0:
-							objects.push(new Sprite());
 						case 1:
 							objects.push(new Sprite());
-							objects[i].position = new Vector2(100,100);
+						case 0:
+							objects.push(new Sprite("backgroundEmpty",1,0.2));
+							objects[i].position = new Vector2(500,500);
 							
 						case 2:
 							objects[i].width*= 2;
