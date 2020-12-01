@@ -49,7 +49,7 @@ class Main {
 		if(playerMove.y != 0){
 			objects[0].position.y += playerMove.y;
 		}
-		camera.lookAt(objects[0].center);
+		camera.lookAt(objects[0]);
 		lastZoom = zoom;
 		lastUnZoom = unZoom;
 	}
@@ -67,7 +67,7 @@ class Main {
 		g2.pushTransformation(camera.getTransformation(1.0));
 
 		for(obj in objects){
-			var pos = obj.position;
+			var pos = obj.position.mult(camera.zoom);
 			g2.pushTranslation(pos.x,pos.y);
 			obj.render(g2);
 			g2.popTransformation();

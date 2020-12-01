@@ -28,10 +28,11 @@ class Camera extends Object {
 		transformation.setFrom(FastMatrix3.translation(-position.x*parallax, -position.y*parallax).multmat(transformation));
 		return transformation;
     }
-    public function lookAt(position:Vector2){
+    public function lookAt(obj:Object){
 		var center = origin;
-		this.position.x = position.x;
-		this.position.y = position.y;
+
+		this.position.x = (obj.position.x + obj.width * 0.5) * zoom;
+		this.position.y = (obj.position.y + obj.height * 0.5) * zoom;
     }
     public function worldToScreen( worldPosition:Vector2 ):Vector2
     {
